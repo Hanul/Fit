@@ -5,27 +5,69 @@ READY(function() {
 	// store
 	store = STORE('Fit'),
 
-	// sizes
-	sizes = {
-		'Samsung GALAXY Note 4' : {
-			width : 360,
-			height : 615
-		},
-		'Apple iPhone 5' : {
-			width : 320,
-			height : 548
-		},
-		'Apple iPhone 4' : {
-			width : 320,
-			height : 460
-		}
-	},
+	// list
+	list,
 
 	// panel
 	panel,
 
 	// iframe
 	iframe,
+
+	// add size.
+	addSize = function(width, height) {
+
+		var
+		// item
+		item = LI({
+			style : {
+				margin : 'auto',
+				marginTop : 10,
+				width : '90%',
+				backgroundColor : '#fff',
+				color : '#000',
+				borderRadius : 10
+			},
+			c : [H3({
+				style : {
+					flt : 'left',
+					padding : '5px 10px',
+					cursor : 'pointer'
+				},
+				c : width + ' x ' + height,
+				on : {
+					tap : function() {
+						createDisplay(width, height);
+					}
+				}
+			}), A({
+				style : {
+					flt : 'right',
+					padding : '7px 10px',
+					fontSize : 12,
+					color : '#999'
+				},
+				c : 'REMOVE',
+				on : {
+					tap : function() {
+
+						REMOVE(sizes, function(size) {
+							if (size.width === width && size.height === height) {
+								return true;
+							}
+						});
+
+						store.save({
+							name : 'sizes',
+							value : sizes
+						});
+
+						item.remove();
+					}
+				}
+			}), CLEAR_BOTH()]
+		}).appendTo(list);
+	},
 
 	// enter.
 	enter = function(url) {
@@ -62,6 +104,15 @@ READY(function() {
 		});
 	};
 
+	if (store.get('sizes') === undefined) {
+		store.save({
+			name : 'sizes',
+			value : sizes
+		});
+	}
+
+	global.sizes = store.get('sizes');
+
 	TABLE({
 		style : {
 			width : '100%'
@@ -70,7 +121,6 @@ READY(function() {
 			c : [TD({
 				style : {
 					width : 220,
-					overflowY : 'scroll',
 					verticalAlign : 'top'
 				},
 				c : [TEXTAREA({
@@ -95,48 +145,56 @@ READY(function() {
 					c : 'Browser Size'
 				}),
 
-				// menu
-				UL({
+				// list
+				list = UL({
 					style : {
-						padding : '10px 0'
+						padding : '10px 0 0 0'
+					}
+				}),
+
+				// add button
+				A({
+					style : {
+						padding : 20,
+						display : 'block',
+						textAlign : 'center',
+						fontSize : 12
 					},
-					c : RUN(function() {
+					c : 'ADD',
+					on : {
+						tap : function() {
 
-						var
-						// array
-						array = [];
+							var
+							// width
+							width = INTEGER(prompt('width')),
 
-						EACH(sizes, function(size, name) {
-							array.push(LI({
-								style : {
-									margin : 'auto',
-									marginTop : 10,
-									width : '90%',
-									backgroundColor : '#fff',
-									color : '#000',
-									borderRadius : 10
-								},
-								c : DIV({
-									style : {
-										padding : 5,
-										cursor : 'pointer'
-									},
-									c : [H3({
-										c : name
-									}), P({
-										c : size.width + ' x ' + size.height
-									})],
-									on : {
-										tap : function() {
-											createDisplay(size.width, size.height);
-										}
-									}
-								})
-							}));
-						});
+							// height
+							height = INTEGER(prompt('height'));
 
-						return array;
-					})
+							if (width !== undefined && height !== undefined && CHECK_IS_IN({
+								array : sizes,
+								value : {
+									width : width,
+									height : height
+								}
+							}) !== true) {
+
+								sizes.push({
+									width : width,
+									height : height
+								});
+
+								store.save({
+									name : 'sizes',
+									value : sizes
+								});
+
+								addSize(width, height);
+
+								createDisplay(width, height);
+							}
+						}
+					}
 				})]
 			}), panel = TD({
 				style : {
@@ -147,6 +205,10 @@ READY(function() {
 			})]
 		})
 	}).appendTo(BODY);
+
+	EACH(sizes, function(size) {
+		addSize(size.width, size.height);
+	});
 
 	if (store.get('size') !== undefined) {
 		createDisplay(store.get('size').width, store.get('size').height);
