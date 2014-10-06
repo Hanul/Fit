@@ -129,6 +129,7 @@ READY(function() {
 						border : 'none'
 					},
 					name : 'url',
+					placeholder : 'URL',
 					value : store.get('url'),
 					on : {
 						keyup : function(e, input) {
@@ -156,11 +157,12 @@ READY(function() {
 				A({
 					style : {
 						padding : 20,
+						paddingBottom : 0,
 						display : 'block',
 						textAlign : 'center',
 						fontSize : 12
 					},
-					c : 'ADD',
+					c : 'ADD SIZE',
 					on : {
 						tap : function() {
 
@@ -195,6 +197,17 @@ READY(function() {
 							}
 						}
 					}
+				}), A({
+					style : {
+						display : 'block',
+						padding : 20,
+						fontSize : 12,
+						color : '#999',
+						textDecoration : 'none'
+					},
+					c : 'by Hanul',
+					href : 'https://github.com/Hanul',
+					target : '_blank'
 				})]
 			}), panel = TD({
 				style : {
