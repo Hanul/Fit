@@ -199,7 +199,7 @@ READY(function() {
 					}
 				}), A({
 					style : {
-						display : 'block',
+						flt : 'left',
 						padding : 20,
 						fontSize : 12,
 						color : '#999',
@@ -208,7 +208,18 @@ READY(function() {
 					c : 'by Hanul',
 					href : 'https://github.com/Hanul',
 					target : '_blank'
-				})]
+				}), A({
+					style : {
+						flt : 'right',
+						padding : 20,
+						fontSize : 12,
+						color : '#999',
+						textDecoration : 'none'
+					},
+					c : 'OpenSource',
+					href : 'https://github.com/Hanul/Fit',
+					target : '_blank'
+				}), CLEAR_BOTH()]
 			}), panel = TD({
 				style : {
 					textAlign : 'center',
